@@ -22,7 +22,7 @@ var connection = mysql.createConnection({
 
 
 
-// validateInput makes sure that the user is supplying only positive integers for their inputs
+// number validation
 function validateInput(value) {
 	var integer = Number.isInteger(parseFloat(value));
 	var sign = Math.sign(value);
@@ -34,11 +34,9 @@ function validateInput(value) {
 	}
 }
 
-// promptUserPurchase will prompt the user for the item/quantity they would like to purchase
-function promptUserPurchase() {
-	// console.log("___ENTER promptUserPurchase___");
 
-	// Prompt the user to select an item
+function promptUserPurchase() {
+
 	inquirer.prompt([
 		{
 			type: "input",
@@ -53,28 +51,17 @@ function promptUserPurchase() {
 			message: "How many do you need?",
 			validate: validateInput,
 			filter: Number
-        },
-        {
-            type: "input",
-            name: "inventory",
-            message: "Update quantity",
-            validate: validateInput,
-            filter: Number
         }
 	]).then(function(input) {
-		// console.log("Customer has selected: \n    item_id = "  + input.item_id + "\n    quantity = " + input.quantity);
+		console.log("Customer has selected: \n    item_id = "  + input.item_id + "\n    quantity = " + input.quantity);
 
 		var item = input.item_id;
-		var quantity = input.quantity;
-
-		// Query db to confirm that the given item ID exists in the desired quantity
+        var quantity = input.quantity;
+        
 		var queryStr = "SELECT * FROM products WHERE ?";
 
 		connection.query(queryStr, {item_id: item}, function(err, data) {
 			if (err) throw err;
-
-			// If the user has selected an invalid item ID, data attay will be empty
-			// console.log("data = " + JSON.stringify(data));
 
 			if (data.length === 0) {
 				console.log("ERROR: Invalid Item ID. Please select a valid Item ID.");
@@ -83,18 +70,11 @@ function promptUserPurchase() {
 			} else {
 				var productData = data[0];
 
-				// console.log("productData = " + JSON.stringify(productData));
-				// console.log("productData.stock_quantity = " + productData.stock_quantity);
-
-				// If the quantity requested by the user is in stock
 				if (quantity <= productData.stock_quantity) {
 					console.log("Congratulations, the product you requested is in stock! Placing order!");
 
-					// Construct the updating query string
 					var updateQueryStr = "UPDATE products SET stock_quantity = " + (productData.stock_quantity - quantity) + " WHERE item_id = " + item;
-					// console.log("updateQueryStr = " + updateQueryStr);
 
-					// Update the inventory
 					connection.query(updateQueryStr, function(err, data) {
 						if (err) throw err;
 
@@ -102,7 +82,6 @@ function promptUserPurchase() {
 						console.log("Thank you for shopping with us!");
 						console.log("\n---------------------------------------------------------------------\n");
 
-						// End the database connection
 						connection.end();
 					})
 				} else {
@@ -117,14 +96,11 @@ function promptUserPurchase() {
 	})
 }
 
-// displayInventory will retrieve the current inventory from the database and output it to the console
 function displayInventory() {
-	// console.log("___ENTER displayInventory___");
 
-	// Construct the db query string
 	queryStr = "SELECT * FROM products";
 
-	// Make the db query
+	// query
 	connection.query(queryStr, function(err, data) {
 		if (err) throw err;
 
@@ -133,18 +109,52 @@ function displayInventory() {
         console.table(data)
 	  	console.log("---------------------------------------------------------------------\n");
 
-	  	//Prompt the user for item/quantity they would like to purchase
 	  	promptUserPurchase();
 	})
 }
 
-// runBamazon will execute the main application logic
+// Runs the brains of the app
 function runBamazon() {
-	// console.log("___ENTER runBamazon___");
 
-	// Display the available inventory
+	// Inventory
 	displayInventory();
 }
 
-// Run the application logic
+
+// Need to figure out a separate way to prompt this
+// inquirer.prompt([
+// {
+//     type: "input",
+//     name: "inventory",
+//     message: "Update quantity",
+//     validate: validateInput,
+//     filter: Number
+// }]).then(function(input) {
+
+// })
+
+// function updateProduct() {
+//     console.log("Updating quantities...\n");
+//     var update = input.item_id
+//     var query = connection.query(
+//       "UPDATE products SET ? WHERE ?",
+//       [
+//         {
+//           quantity: 10
+//         },
+//         {
+//           selection: update
+//         }
+//       ],
+//       function(err, res) {
+//         console.log(res.update + " products updated!\n");
+//       }
+//     );
+  
+//     // logs the actual query being run
+//     console.log(query.sql);
+//   }
+  
+
+// Run program
 runBamazon();
