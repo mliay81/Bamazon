@@ -117,44 +117,48 @@ function displayInventory() {
 function runBamazon() {
 
 	// Inventory
-	displayInventory();
+    displayInventory();
+    
+
+    // Gotta figure out how to make the manager part work.
+    
+// var answers = ["yes", "no"]
+// function updateInventory() {
+//     inquirer.prompt([
+//         {
+//             type: "input",
+//             name: "inventory",
+//             message: "Are you a manager that wants to update quantity?",
+//             validate: updateInventory
+//         }]).then(function(input) {
+//         if (input === "yes") {
+//             console.log("Updating quantities...\n");
+//             var update = input.item_id
+//             var query = connection.query(
+//               "UPDATE products SET ? WHERE ?",
+//               [
+//                 {
+//                   quantity: 10
+//                 },
+//                 {
+//                   selection: update
+//                 }
+//               ],
+//               function(err, res) {
+//                 console.log(res.update + " products updated!\n");
+//               }
+//             );
+          
+//             // logs the actual query being run
+//             console.log(query.sql);
+//           }
+// }
+// }
 }
 
 
-// Need to figure out a separate way to prompt this
-// inquirer.prompt([
-// {
-//     type: "input",
-//     name: "inventory",
-//     message: "Update quantity",
-//     validate: validateInput,
-//     filter: Number
-// }]).then(function(input) {
 
-// })
-
-// function updateProduct() {
-//     console.log("Updating quantities...\n");
-//     var update = input.item_id
-//     var query = connection.query(
-//       "UPDATE products SET ? WHERE ?",
-//       [
-//         {
-//           quantity: 10
-//         },
-//         {
-//           selection: update
-//         }
-//       ],
-//       function(err, res) {
-//         console.log(res.update + " products updated!\n");
-//       }
-//     );
-  
-//     // logs the actual query being run
-//     console.log(query.sql);
-//   }
-  
 
 // Run program
 runBamazon();
+// updateInventory() 
